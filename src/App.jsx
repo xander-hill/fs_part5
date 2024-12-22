@@ -11,9 +11,6 @@ const App = () => {
   const [username, setUsername] = useState('')
   const [password, setPassword] = useState('')
   const [user, setUser] = useState(null)
-  const [title, setTitle] = useState('')
-  const [author, setAuthor] = useState('')
-  const [url, setUrl] = useState('')
   const [message, setMessage] = useState(null)
 
   const blogFormRef = useRef()
@@ -77,6 +74,31 @@ const App = () => {
       })
   }
 
+  const likeBlog = (id) => {
+    console.log(blogs)
+    const blog = blogs.find(blog => blog.id === id)
+    console.log(blog)
+    const changedBlog = {...blog, likes: blog.likes + 1}
+    console.log(changedBlog)
+
+    blogService
+      .update(id, changedBlog)
+      .then(returnedBlog => {
+        console.log(returnedBlog)
+        setBlogs(blogs.map(blog => blog.id === id ? returnedBlog: blog))
+      })
+      .catch(error => {
+        setMessage(
+          `Note '${blog.title}' was already removed from server`
+        )
+        setTimeout(() => {
+          setMessage(null)
+        }, 5000)
+        setBlogs(blogs.filter(blog => blog.id !== id))
+      })
+    console.log(blogs)
+  }
+
   if (user === null) {
     return (
       <div>
@@ -118,9 +140,11 @@ const App = () => {
       <Togglable buttonLabel='new blog' ref={blogFormRef}>
         <BlogForm createBlog={addBlog}/>
       </Togglable>
+      <div>
      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} />
+        <Blog key={blog.id} blog={blog} likeBlog={() => likeBlog(blog.id)} />
       )}
+      </div>
     </div>
   )
 }
