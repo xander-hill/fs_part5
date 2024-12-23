@@ -96,14 +96,17 @@ const App = () => {
   }
 
   const deleteBlog = (id) => {
-    blogService
-      .remove(id)
-      .then(setBlogs(blogs.filter(blog => blog.id != id)))
-      .catch (error => {
-        console.error('Error deleting blog:', error);
-        setMessage('Failed to delete the blog');
-        setTimeout(() => setMessage(null), 5000);
-      })
+    const blog = blogs.find(blog => blog.id === id)
+
+    if (window.confirm(`Remove ${blog.title} by ${blog.author}`))
+    { blogService
+        .remove(id)
+        .then(setBlogs(blogs.filter(blog => blog.id != id)))
+        .catch (error => {
+          console.error('Error deleting blog:', error);
+          setMessage('Failed to delete the blog');
+          setTimeout(() => setMessage(null), 5000);
+        })}
   }
 
   const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
