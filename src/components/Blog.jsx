@@ -20,14 +20,14 @@ const Blog = ({ blog, likeBlog, removeBlog, loggedIn }) => {
 
   if (details === false) {
     return (
-      <div style={blogStyle}>
+      <div style={blogStyle} className="blog">
         {blog.title} {blog.author}
         <button onClick={changeDetails}>view</button>
       </div>  
   )}
 
   return (
-    <div style={blogStyle}>
+    <div style={blogStyle} className="blog">
         <div>
         {blog.title} {blog.author}
         <button onClick={changeDetails}>hide</button>
