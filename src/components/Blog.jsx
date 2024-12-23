@@ -1,7 +1,8 @@
 import { useState } from "react"
 
-const Blog = ({ blog, likeBlog, removeBlog }) => {
+const Blog = ({ blog, likeBlog, removeBlog, loggedIn }) => {
   const [details, setDetails] = useState(false)
+  const isCreator = blog.user.name === loggedIn.name
 
   const blogStyle = {
     paddingTop: 10,
@@ -35,7 +36,7 @@ const Blog = ({ blog, likeBlog, removeBlog }) => {
           <button type="submit" onClick={likeBlog}>like</button>
         </div>
         <div>{blog.user.name}</div>
-        <button type="submit" onClick={removeBlog}>remove</button>
+        {isCreator && (<button type="submit" onClick={removeBlog}>remove</button>)}
       </div>  
   )
 }
