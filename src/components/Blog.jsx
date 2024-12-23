@@ -1,6 +1,6 @@
 import { useState } from "react"
 
-const Blog = ({ blog, likeBlog }) => {
+const Blog = ({ blog, likeBlog, removeBlog }) => {
   const [details, setDetails] = useState(false)
 
   const blogStyle = {
@@ -35,6 +35,7 @@ const Blog = ({ blog, likeBlog }) => {
           <button type="submit" onClick={likeBlog}>like</button>
         </div>
         <div>{blog.user.name}</div>
+        <button type="submit" onClick={removeBlog}>remove</button>
       </div>  
   )
 }

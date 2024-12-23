@@ -75,11 +75,8 @@ const App = () => {
   }
 
   const likeBlog = (id) => {
-    console.log(blogs)
     const blog = blogs.find(blog => blog.id === id)
-    console.log(blog)
     const changedBlog = {...blog, likes: blog.likes + 1}
-    console.log(changedBlog)
 
     blogService
       .update(id, changedBlog)
@@ -96,8 +93,20 @@ const App = () => {
         }, 5000)
         setBlogs(blogs.filter(blog => blog.id !== id))
       })
-    console.log(blogs)
   }
+
+  const deleteBlog = (id) => {
+    blogService
+      .remove(id)
+      .then(setBlogs(blogs.filter(blog => blog.id != id)))
+      .catch (error => {
+        console.error('Error deleting blog:', error);
+        setMessage('Failed to delete the blog');
+        setTimeout(() => setMessage(null), 5000);
+      })
+  }
+
+  const sortedBlogs = blogs.sort((a, b) => b.likes - a.likes)
 
   if (user === null) {
     return (
@@ -142,7 +151,7 @@ const App = () => {
       </Togglable>
       <div>
      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} likeBlog={() => likeBlog(blog.id)} />
+        <Blog key={blog.id} blog={blog} likeBlog={() => likeBlog(blog.id)} removeBlog={() => deleteBlog(blog.id)}/>
       )}
       </div>
     </div>
