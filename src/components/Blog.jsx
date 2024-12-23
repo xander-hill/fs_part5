@@ -1,4 +1,5 @@
 import { useState } from "react"
+import PropTypes from 'prop-types'
 
 const Blog = ({ blog, likeBlog, removeBlog, loggedIn }) => {
   const [details, setDetails] = useState(false)
@@ -39,6 +40,11 @@ const Blog = ({ blog, likeBlog, removeBlog, loggedIn }) => {
         {isCreator && (<button type="submit" onClick={removeBlog}>remove</button>)}
       </div>  
   )
+}
+
+Blog.PropTypes = {
+  likeBlog: PropTypes.func.isRequired,
+  removeBlog: PropTypes.func.isRequired,
 }
 
 export default Blog
