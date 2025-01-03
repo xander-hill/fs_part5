@@ -53,6 +53,7 @@ describe('Blog app', () => {
             describe('blog uploaded', () => {
                 beforeEach( async ({ page }) => {
                     await createBlog(page, 'Bing', 'Bong', 'www.bingbong.com')
+                    await page.getByText('Bing Bong').waitFor()
                 })
 
                 test('can like a blog', async ({ page }) => {
@@ -81,6 +82,23 @@ describe('Blog app', () => {
                     await page.getByText('Bing Bong').waitFor()
                     await page.getByRole('button', { name: 'view' }).click()
                     await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
+                })
+
+                test('blogs arranged by likes', async ({ page }) => {
+                    test.setTimeout(60000)
+                    await createBlog(page, 'boom', 'bop', 'blam')
+                    await page.getByText('boom bop').waitFor()
+                    await createBlog(page, 'zoinks', 'scoob', 'ruhroh')
+                    await page.getByText('zoinks scoob').waitFor()
+                    const firstBlog = page.locator('div.blog', { hasText: 'boom bop' })
+                    const secondBlog = page.locator('div.blog', { hasText: 'zoinks scoob' })
+                    await firstBlog.getByRole('button', { name: 'view' }).click()
+                    await firstBlog.getByRole('button', { name: 'like' }).click()
+                    await secondBlog.getByRole('button', { name: 'view' }).click()
+                    await secondBlog.getByRole('button', { name: 'like' }).click()
+                    await secondBlog.getByRole('button', { name: 'like' }).click()
+                    const topBlog = page.locator('div.blog').first()
+                    await expect(topBlog.getByText('zoinks scoob')).toBeVisible()
                 })
             })
         })
