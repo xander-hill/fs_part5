@@ -42,6 +42,32 @@ describe('Blog app', () => {
                 await page.pause()
                 await expect(page.getByText('Bing Bong')).toBeVisible()
             })
+
+            describe('blog uploaded', () => {
+                beforeEach( async ({ page }) => {
+                    await createBlog(page, 'Bing', 'Bong', 'www.bingbong.com')
+                })
+
+                test('can like a blog', async ({ page }) => {
+                    await page.getByRole('button', { name: 'view' }).click()
+                    await page.getByRole('button', { name: 'like' }).click()
+                    await expect(page.getByText('likes: 1')).toBeVisible()
+                })
+
+                test('can remove a blog', async ({ page }) => {
+                    page.on('dialog', async (dialog) => {
+                        if (dialog.type() === 'confirm') {
+                            expect(dialog.message()).toBe('Remove Bing by Bong') // Assert the dialog message
+                            await dialog.accept(); // Simulate clicking "OK"
+                        }
+                    })
+                    await page.getByRole('button', { name: 'view' }).click()
+                    await page.getByRole('button', { name: 'like' }).click()
+                    await page.getByRole('button', { name: 'remove' }).waitFor()
+                    await page.getByRole('button', { name: 'remove' }).click()
+                    await expect(page.getByText('Bing Bong')).not.toBeVisible()
+                })
+            })
         })
     })
 })
