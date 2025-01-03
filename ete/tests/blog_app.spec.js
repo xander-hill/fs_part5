@@ -11,6 +11,13 @@ describe('Blog app', () => {
                 password: 'dillydilly'
             }
         })
+        await request.post('http://localhost:3003/api/users', {
+            data: {
+                name: 'Boogie Woogie',
+                username: 'boogie',
+                password: 'woogie'
+            }
+        })
 
         await page.goto('http://localhost:5173')
     })
@@ -57,8 +64,8 @@ describe('Blog app', () => {
                 test('can remove a blog', async ({ page }) => {
                     page.on('dialog', async (dialog) => {
                         if (dialog.type() === 'confirm') {
-                            expect(dialog.message()).toBe('Remove Bing by Bong') // Assert the dialog message
-                            await dialog.accept(); // Simulate clicking "OK"
+                            expect(dialog.message()).toBe('Remove Bing by Bong')
+                            await dialog.accept()
                         }
                     })
                     await page.getByRole('button', { name: 'view' }).click()
@@ -66,6 +73,14 @@ describe('Blog app', () => {
                     await page.getByRole('button', { name: 'remove' }).waitFor()
                     await page.getByRole('button', { name: 'remove' }).click()
                     await expect(page.getByText('Bing Bong')).not.toBeVisible()
+                })
+
+                test('only creator can remove a blog', async ({ page }) => {
+                    await page.getByRole('button', { name: 'logout' }).click()
+                    await loginWith(page, 'boogie', 'woogie')
+                    await page.getByText('Bing Bong').waitFor()
+                    await page.getByRole('button', { name: 'view' }).click()
+                    await expect(page.getByRole('button', { name: 'remove' })).not.toBeVisible()
                 })
             })
         })
